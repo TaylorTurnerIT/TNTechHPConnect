@@ -31,6 +31,8 @@ Drop `--dry-run` (or set `--ssh user@host`) to actually execute.
   with `0600` permissions — editable by hand or via `config init/show`.
 - Passwords are **never** written to disk: `auth login` puts them in the OS
   keychain (service `tntech-hpc`, account = username) via the `keyring` crate.
+  On Linux this uses the D-Bus Secret Service (KWallet / GNOME Keyring), so
+  build inside the provided devenv (`devenv shell`, supplies dbus headers).
 - Non-interactive password use needs `sshpass` installed
   (e.g. `nix-shell -p sshpass`); without it, ssh/scp fall back to prompting.
   Key auth is recommended: login offers to generate an ed25519 key, prints the

@@ -4,10 +4,14 @@
   # - gcc: linker for `cargo build` (rustc alone is not enough)
   # - openssh: ssh / scp clients used for every cluster operation
   # - sshpass: applies the keychain-stored password non-interactively
+  # - dbus + pkg-config: headers for building the Secret Service backend
+  #   (keyring sync-secret-service -> libdbus-sys)
   packages = with pkgs; [
     gcc
     openssh
     sshpass
+    dbus
+    pkg-config
   ];
 
   # Prefer the user's rustup toolchain when present, so cargo/rustc versions
@@ -27,5 +31,6 @@
     command -v scp
     command -v sshpass
     command -v cargo
+    pkg-config --exists dbus-1
   '';
 }
