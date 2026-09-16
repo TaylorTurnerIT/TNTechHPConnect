@@ -1,5 +1,4 @@
 use anyhow::Result;
-use std::process::Command;
 
 use crate::cli::{GlobalOpts, SubmitArgs};
 use crate::{config, ssh};
@@ -17,23 +16,26 @@ pub fn run(args: SubmitArgs, global: &GlobalOpts) -> Result<()> {
         .unwrap_or_else(|| "job.sbatch".to_string());
     let remote_script = format!("{workdir}/tntech-hpc/{script_name}");
 
-    // 1. mkdir + upload
-    let mkdir_cmd = format!("ssh {} {:?}", target, format!("mkdir -p {workdir}/tntech-hpc"));
-    let scp_cmd = format!("scp {} {target}:{remote_script}", ssh::sh_escape(&args.script));
+    // 1. mkdir + upload (auth-aware: keychain password applied via sshpass when present)
+    let mkdir_remote = format!("mkdir -p {workdir}/tntech-hpc");
     if global.dry_run {
-        println!("{mkdir_cmd}");
-        println!("{scp_cmd}");
+        ssh::ssh_run(&target, &mkdir_remote, true)?;
+        ssh::scp_run(
+            &args.script,
+            &format!("{target}:{remote_script}"),
+            &[],
+            &target,
+            true,
+        )?;
     } else {
-        let st = Command::new("ssh")
-            .arg(&target)
-            .arg(format!("mkdir -p {workdir}/tntech-hpc"))
-            .status()?;
-        anyhow::ensure!(st.success(), "remote mkdir failed");
-        let st = Command::new("scp")
-            .arg(&args.script)
-            .arg(format!("{target}:{remote_script}"))
-            .status()?;
-        anyhow::ensure!(st.success(), "scp upload failed");
+        ssh::ssh_run(&target, &mkdir_remote, false)?;
+        ssh::scp_run(
+            &args.script,
+            &format!("{target}:{remote_script}"),
+            &[],
+            &target,
+            false,
+        )?;
     }
 
     // 2. sbatch

@@ -1,6 +1,7 @@
 mod cli;
 mod commands;
 mod config;
+mod secret;
 mod ssh;
 
 use anyhow::Result;
@@ -16,6 +17,7 @@ fn main() -> Result<()> {
         Command::Resources(args) => commands::resources::run(args, &cli.global),
         Command::Results(args) => commands::results::run(args, &cli.global),
         Command::Config(args) => commands::config_cmd::run(args),
+        Command::Auth(args) => commands::auth::run(args),
         Command::Docs(args) => commands::docs::run(args),
     }
 }

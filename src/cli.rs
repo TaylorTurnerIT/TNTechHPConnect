@@ -39,6 +39,8 @@ pub enum Command {
     Results(ResultsArgs),
     /// Manage local connection config (~/.config/tntech-hpc/config.toml)
     Config(ConfigArgs),
+    /// Interactive cluster login (stores identity + keychain password locally)
+    Auth(AuthArgs),
     /// Show local copy of TN Tech HPC documentation
     Docs(DocsArgs),
 }
@@ -103,6 +105,35 @@ pub enum ConfigAction {
     Init,
     /// Print current config
     Show,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct AuthArgs {
+    #[command(subcommand)]
+    pub action: AuthAction,
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum AuthAction {
+    /// Interactive login: prompt for host/user/creds, verify, store locally
+    Login(LoginArgs),
+    /// Remove the stored keychain password
+    Logout,
+    /// Show auth state (never prints secrets)
+    Status,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct LoginArgs {
+    /// Prefill hostname (still prompts, editable)
+    #[arg(long)]
+    pub host: Option<String>,
+    /// Prefill username (still prompts, editable)
+    #[arg(long)]
+    pub user: Option<String>,
+    /// Skip the live `ssh` connection test
+    #[arg(long, default_value_t = false)]
+    pub no_test: bool,
 }
 
 #[derive(Args, Debug, Clone)]

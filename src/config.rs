@@ -7,6 +7,15 @@ pub struct AppConfig {
     pub ssh_target: String,
     /// default remote workdir
     pub default_workdir: String,
+    /// cluster hostname (set by `auth login`)
+    #[serde(default)]
+    pub host: Option<String>,
+    /// cluster username (set by `auth login`; never a password)
+    #[serde(default)]
+    pub username: Option<String>,
+    /// local private key path for key auth (set by `auth login`)
+    #[serde(default)]
+    pub key_path: Option<String>,
 }
 
 impl Default for AppConfig {
@@ -14,6 +23,9 @@ impl Default for AppConfig {
         Self {
             ssh_target: "user@hpc.tntech.edu".to_string(),
             default_workdir: "$HOME".to_string(),
+            host: Some("hpc.tntech.edu".to_string()),
+            username: None,
+            key_path: None,
         }
     }
 }
@@ -37,9 +49,21 @@ pub fn load() -> Result<AppConfig> {
 
 pub fn init() -> Result<std::path::PathBuf> {
     let path = config_path().context("no config dir")?;
-    std::fs::create_dir_all(path.parent().unwrap())?;
     if !path.exists() {
-        std::fs::write(&path, toml::to_string_pretty(&AppConfig::default())?)?;
+        return save(&AppConfig::default());
+    }
+    Ok(path)
+}
+
+/// Write config with owner-only permissions (it holds identity, never secrets).
+pub fn save(cfg: &AppConfig) -> Result<std::path::PathBuf> {
+    let path = config_path().context("no config dir")?;
+    std::fs::create_dir_all(path.parent().unwrap())?;
+    std::fs::write(&path, toml::to_string_pretty(cfg)?)?;
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600))?;
     }
     Ok(path)
 }

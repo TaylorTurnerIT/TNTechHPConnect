@@ -1,3 +1,4 @@
+pub mod auth;
 pub mod config_cmd;
 pub mod docs;
 pub mod queue;
