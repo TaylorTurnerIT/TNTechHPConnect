@@ -3,3 +3,5 @@ Cargo.lock
 results/
 *.out
 *.log
+.devenv*
+devenv.local.nix

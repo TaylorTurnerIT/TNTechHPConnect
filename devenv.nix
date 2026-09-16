@@ -1,0 +1,31 @@
+{ pkgs, ... }:
+{
+  # System packages the CLI shells out to (or needs to build):
+  # - gcc: linker for `cargo build` (rustc alone is not enough)
+  # - openssh: ssh / scp clients used for every cluster operation
+  # - sshpass: applies the keychain-stored password non-interactively
+  packages = with pkgs; [
+    gcc
+    openssh
+    sshpass
+  ];
+
+  # Prefer the user's rustup toolchain when present, so cargo/rustc versions
+  # stay pinned by rustup instead of nixpkgs.
+  enterShell = ''
+    for d in "$HOME"/.rustup/toolchains/*/bin; do
+      if [ -d "$d" ]; then
+        export PATH="$d:$PATH"
+      fi
+    done
+  '';
+
+  # `devenv test` verifies the environment provides everything.
+  enterTest = ''
+    command -v gcc
+    command -v ssh
+    command -v scp
+    command -v sshpass
+    command -v cargo
+  '';
+}
