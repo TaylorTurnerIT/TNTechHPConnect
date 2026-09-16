@@ -16,7 +16,7 @@ pub struct Cli {
 
 #[derive(Args, Debug, Clone)]
 pub struct GlobalOpts {
-    /// SSH destination, e.g. user@hpc.tntech.edu (overrides config file / env TNT_HPC_SSH)
+    /// SSH destination, e.g. user@login.hpc.tntech.edu (overrides config file / env TNT_HPC_SSH)
     #[arg(long, global = true, env = "TNT_HPC_SSH")]
     pub ssh: Option<String>,
 

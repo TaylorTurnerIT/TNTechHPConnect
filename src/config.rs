@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppConfig {
-    /// e.g. "user@hpc.tntech.edu"
+    /// e.g. "user@login.hpc.tntech.edu"
     pub ssh_target: String,
     /// default remote workdir
     pub default_workdir: String,
@@ -21,9 +21,9 @@ pub struct AppConfig {
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
-            ssh_target: "user@hpc.tntech.edu".to_string(),
+            ssh_target: "user@login.hpc.tntech.edu".to_string(),
             default_workdir: "$HOME".to_string(),
-            host: Some("hpc.tntech.edu".to_string()),
+            host: Some("login.hpc.tntech.edu".to_string()),
             username: None,
             key_path: None,
         }

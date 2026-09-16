@@ -21,7 +21,7 @@ pub fn run_login(args: LoginArgs) -> Result<()> {
     let host_default = args
         .host
         .or(cfg.host.clone())
-        .unwrap_or_else(|| "hpc.tntech.edu".to_string());
+        .unwrap_or_else(|| "login.hpc.tntech.edu".to_string());
     let host: String = Input::new()
         .with_prompt("HPC hostname")
         .default(host_default)
