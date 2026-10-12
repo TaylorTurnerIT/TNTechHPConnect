@@ -1,6 +1,6 @@
 # TNTechHPConnect
 
-Rust CLI that mirrors Google-Colab-style workflows for the **TN Tech University HPC clusters** (Impulse / Warp 1 + GENESIS/ASCEND):
+Rust CLI that mirrors Google-Colab-style workflows for the TN Tech University HPC:
 
 - submit compute jobs (`sbatch` over SSH)
 - check job queue status (`squeue`)
@@ -8,7 +8,7 @@ Rust CLI that mirrors Google-Colab-style workflows for the **TN Tech University 
 - check allocated resources (`sinfo` / `sshare` / quota)
 - fetch results back (`scp -r`)
 
-Simple + fast: thin wrapper over the OpenSSH client you already have. No daemon, no heavy deps.
+Simple + fast: thin wrapper over OpenSSH client.
 
 ## Quick start
 
@@ -55,12 +55,8 @@ Drop `--dry-run` (or set `--ssh user@host`) to actually execute.
 
 ## Docs mirror
 
-`docs/` holds a local copy of all *publicly reachable* TN Tech HPC documentation
+`docs/` holds a local copy of all publicly reachable TN Tech HPC documentation
 (fetched 2026-09-16). The canonical how-to KB lives behind TN Tech SSO at
 `services.tntech.edu/TDClient/...` and cannot be scraped anonymously — see
 `docs/GATED_DOCS_INDEX.md` for the article-ID index so an authenticated user can
 export them.
-
-## Private repo
-
-This repo is intended to live as a **private** GitHub repo (`gh repo create --private`).
